@@ -18,7 +18,6 @@ const VALUES = {
     D: 2
 }
 
-
 const deposit = () => {
 
     while (true){
