@@ -113,7 +113,25 @@ const display = (rows) => {
 }
 
 const win = (rows, betAmount, lines) => {
-    
+    let winnings = 0;
+
+    for (let row = 0; row < lines; row++){
+        const symbols = rows[row];
+        let same = true;
+
+        for (const symbol of symbols){
+            if (symbol != symbols[0]){
+                same = false;
+                break;
+            }
+        }
+
+        if (same){
+            winnings += bet * VALUES[symbols[0]];
+        }
+    }
+
+    return winnings
 }
 
 let balance = deposit();
@@ -122,5 +140,8 @@ const betAmount = bet(balance);
 const reels = spin();
 const rows = transpose(reels);
 display(rows);
+const winnings = win(rows, betAmount, lines);
+console.log(`You won $${winnings}`);
+
 
 
