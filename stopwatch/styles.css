@@ -1,0 +1,44 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#h1{
+    font-size: 2rem;
+    position: relative;
+    bottom: 20px;
+}
+
+#container{
+    text-align: center;
+    background-color: #fff;
+    width: 500px;
+    height: 200;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#display{
+    font-size: 4rem;
+    font-family: monospace;
+    text-shadow: 2px 2px 2px grey;
+    margin-bottom: 25px;
+}
+
+#controls button{
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin: 5px;
+    min-width: 125px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover{
+}
