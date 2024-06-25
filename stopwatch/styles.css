@@ -40,5 +40,34 @@ body{
     cursor: pointer;
 }
 
-button:hover{
+.start{
+    background-color: lightgreen;
 }
+
+.start:hover{
+    background-color: rgb(107, 228, 107);
+}
+
+.start:active{
+    background-color: rgb(81, 237, 81);
+}
+
+.pause{
+    background-color: rgb(238, 98, 98);
+}
+
+.pause:hover{
+    background-color: rgb(238, 75, 75);
+}
+
+.pause:active{
+    background-color: rgb(238, 52, 52);
+}
+
+.clear:hover{
+    background-color: rgb(206, 206, 206);
+} 
+
+.clear:active{
+    background-color: rgb(177, 177, 177);
+} 
