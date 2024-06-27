@@ -5,6 +5,7 @@ This is just to briefly document what I learnt and practiced in each project:
 ### slot machine:
 
 - First tackle at JS, learnt basic syntax and structure
+- Used node.js
 
 ### calculator:
 
