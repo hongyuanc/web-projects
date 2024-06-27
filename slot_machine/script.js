@@ -1,138 +1,115 @@
-const prompt = require("prompt-sync")();
-
 const ROWS = 3;
 const COLS = 3;
-
-const SYMBOLS = {
-    A: 2,
-    B: 4,
-    C: 6,
-    D: 8
-}
+const SYMBOLS = ['🍒', '🍋', '🍊', '🍇', '7️⃣', '💎'];
 
 const VALUES = {
-    A: 5,
-    B: 4,
-    C: 3,
-    D: 2
-}
+    '🍒': 2,
+    '🍋': 3,
+    '🍊': 4,
+    '🍇': 5,
+    '7️⃣': 7,
+    '💎': 10
+};
 
-const deposit = () => {
-    while (true){
-        const depositAmount = prompt("Enter a deposit amount: ");
-        const deposit = parseFloat(depositAmount);
-        if (isNaN(deposit) || deposit <= 0){
-            console.log("Invalid number.");
-        } else {
-            return deposit;
-        }
+let balance = 100;
+
+function createReels() {
+    const reelsContainer = document.getElementById('reels');
+    for (let i = 0; i < COLS; i++) {
+        const reel = document.createElement('div');
+        reel.className = 'reel';
+        const reelContainer = document.createElement('div');
+        reelContainer.className = 'reel-container';
+        reel.appendChild(reelContainer);
+        reelsContainer.appendChild(reel);
     }
 }
 
-const numLines = () => {
-    while (true){
-        const lines = prompt("How many lines to bet (1-3): ");
-        const numLines = parseInt(lines);
-        if (isNaN(numLines) || numLines <= 0 || numLines > 3){
-            console.log("Invalid number.");
-        } else {
-            return numLines;
-        }
-    }
+function spin() {
+    return Array.from({ length: COLS }, () =>
+        Array.from({ length: ROWS + 15 }, () => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)])
+    );
 }
 
-const bet = (balance) => {
-    while (true){
-        const bet = parseFloat(prompt("Place bet: "));
-        if (isNaN(bet)){
-            console.log("Invalid number.");
-        } else if (bet > balance || bet > balance/lines) {
-            console.log("Bet is larger than deposit.");
-        } else {
-            return bet;
-        }
-    }
+function display(reels) {
+    const reelContainers = document.querySelectorAll('.reel-container');
+    reelContainers.forEach((container, i) => {
+        container.innerHTML = '';
+        reels[i].forEach(symbol => {
+            const symbolElement = document.createElement('div');
+            symbolElement.className = 'symbol';
+            symbolElement.textContent = symbol;
+            container.appendChild(symbolElement);
+        });
+    });
 }
 
-const spin = () => {
-    const symbols = [];
-    for (const [symbol, count] of Object.entries(SYMBOLS)){
-        for (let i = 0; i < count; i++){
-            symbols.push(symbol);
-        }
-    }
-
-    const reels = [];
-    for (let i = 0; i < COLS; i++){
-        reels.push([]);
-        const symbolsRemain = [...symbols];
-        for (let j = 0; j < ROWS; j++){
-            const randomIndex = Math.floor(Math.random() * symbolsRemain.length);
-            const selectedSymbol = symbolsRemain[randomIndex];
-            reels[i].push(selectedSymbol);
-            symbolsRemain.splice(randomIndex, 1);
-        }
-    }
-
-    return reels;
+function animateSpin(reels) {
+    return new Promise(resolve => {
+        const reelContainers = document.querySelectorAll('.reel-container');
+        reelContainers.forEach((container, i) => {
+            const delay = i * 0.2;
+            container.style.transition = 'none';
+            container.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                container.style.transition = `transform 5s cubic-bezier(0.25, 0.1, 0.25, 1) ${delay}s`;
+                container.style.transform = `translateY(-${container.querySelector('.symbol').offsetHeight * 15}px)`;
+            }, 50);
+        });
+        setTimeout(resolve, 5500);
+    });
 }
 
-const transpose = (reels) => {
-    const row = [];
-    for (let i = 0; i < ROWS; i++){
-        row.push([]);
-        for (let j = 0; j < COLS; j++){
-            row[i].push(reels[j][i]);
-        }
-    }
-    return row;
-}
-
-const display = (rows) => {
-    const reelsDiv = document.getElementById("reels");
-    reelsDiv.innerHTML = "";
-    for (const row of rows){
-        let rowString = "";
-        for (const [i, symbol] of row.entries()){
-            rowString += symbol;
-            if (i != row.length - 1){
-                rowString += " | ";
-            }
-        }
-        const rowDiv = document.createElement("div");
-        rowDiv.textContent = rowString;
-        reelsDiv.appendChild(rowDiv);
-    }
-}
-
-const win = (rows, betAmount, lines) => {
+function win(rows, betAmount, lines) {
     let winnings = 0;
-    for (let row = 0; row < lines; row++){
+    for (let row = 0; row < lines; row++) {
         const symbols = rows[row];
         let same = true;
-        for (const symbol of symbols){
-            if (symbol != symbols[0]){
+        for (const symbol of symbols) {
+            if (symbol != symbols[0]) {
                 same = false;
                 break;
             }
         }
-        if (same){
+        if (same) {
             winnings += betAmount * VALUES[symbols[0]];
         }
     }
     return winnings;
 }
 
-const playGame = () => {
-    let balance = deposit();
-    const lines = numLines();
-    const betAmount = bet(balance);
-    const reels = spin();
-    const rows = transpose(reels);
-    display(rows);
-    const winnings = win(rows, betAmount, lines);
+async function playGame() {
+    const depositInput = document.getElementById("depositInput");
+    const linesInput = document.getElementById("linesInput");
+    const betInput = document.getElementById("betInput");
+    const playButton = document.getElementById("playButton");
     const resultDiv = document.getElementById("result");
-    resultDiv.textContent = `You won $${winnings}`;
+
+    balance = parseFloat(depositInput.value);
+    const lines = parseInt(linesInput.value);
+    const betAmount = parseFloat(betInput.value);
+
+    if (isNaN(balance) || isNaN(lines) || isNaN(betAmount) || balance <= 0 || lines < 1 || lines > 3 || betAmount <= 0 || betAmount * lines > balance) {
+        alert("Invalid input. Please check your values and try again.");
+        return;
+    }
+
+    playButton.disabled = true;
+    balance -= betAmount * lines;
+    depositInput.value = balance.toFixed(2);
+
+    const reels = spin();
+    display(reels);
+    await animateSpin(reels);
+
+    const rows = reels.map(reel => reel.slice(-3));
+    const winnings = win(rows, betAmount, lines);
+    balance += winnings;
+    depositInput.value = balance.toFixed(2);
+
+    resultDiv.textContent = winnings > 0 ? `You won $${winnings.toFixed(2)}!` : "Try again!";
+    playButton.disabled = false;
 }
 
-document.getElementById("playButton").addEventListener("click", playGame);
+createReels();
+document.getElementById('playButton').addEventListener('click', playGame);
