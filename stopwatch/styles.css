@@ -12,7 +12,13 @@ body{
     font-size: 2rem;
     position: relative;
     bottom: 20px;
+    transition: transform 1s;
 }
+
+#h1:hover{
+    transform: translateY(-10px);
+}
+
 
 #container{
     text-align: center;
@@ -38,6 +44,12 @@ body{
     min-width: 125px;
     border-radius: 8px;
     cursor: pointer;
+
+    transition: transform 0.3s ease;
+}
+
+#controls button:hover{
+    transform: translateY(-10px);
 }
 
 .start{
