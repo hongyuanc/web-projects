@@ -1,4 +1,4 @@
-# JavaScript Projects
+# Web Projects
 
 This is just to briefly document what I learnt and practiced in each project:
 
